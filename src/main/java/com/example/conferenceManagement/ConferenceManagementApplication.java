@@ -14,7 +14,7 @@ public class ConferenceManagementApplication implements CommandLineRunner  {
 	@Override
 	public void run(String... args) throws Exception {
     System.out.println("\033[36m<--------------------Start-------------------->\033[0m");
-		System.out.println("Running successfully!");
+		System.out.println("Running!");
     System.out.println("\033[36m<---------------------End--------------------->\033[0m");
 	}
 }
