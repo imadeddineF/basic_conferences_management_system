@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @IdClass(UserRole.class)
 @Table(name = "userRoles")
 public class UserRole {
-
     @Id
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
