@@ -1,8 +1,35 @@
 package com.example.conferenceManagement.controllers;
 
-import org.springframework.stereotype.Controller;
+import com.example.conferenceManagement.dto.UserDTO;
+import com.example.conferenceManagement.entities.User;
+import com.example.conferenceManagement.services.interfaces.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/api") // Base path for the API
 public class UserController {
-  
+    private UserService userService;
+
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    @GetMapping("/users")
+    public List<UserDTO> getAllUsers() {
+        return userService.findAllUsers();
+    }
+
+    @GetMapping("/users/{userId}")
+    public UserDTO getUserById(@PathVariable Long userId) {
+        return userService.findUserById(userId);
+    }
+
+    @PostMapping("/addUser")
+    public UserDTO createUser(@RequestBody User newUser) {
+        return userService.createUser(newUser);
+    }
 }

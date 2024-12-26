@@ -2,9 +2,18 @@ package com.example.conferenceManagement.entities;
 
 import com.example.conferenceManagement.enums.EUserRole;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @IdClass(UserRole.class)
+@Table(name = "userRoles")
 public class UserRole {
 
     @Id
