@@ -1,5 +1,6 @@
 package com.example.conferenceManagement.services.interfaces;
 
+import com.example.conferenceManagement.dto.LoginDTO;
 import com.example.conferenceManagement.dto.UserDTO;
 import com.example.conferenceManagement.entities.User;
 
@@ -10,4 +11,5 @@ public interface UserService {
     List<UserDTO> findAllUsers();
     UserDTO findUserById(Long userId);
     UserDTO createUser(User newUser);
+    UserDTO signin(LoginDTO loginDTO);
 }

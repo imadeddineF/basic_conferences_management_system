@@ -1,5 +1,6 @@
 package com.example.conferenceManagement.services.impl;
 
+import com.example.conferenceManagement.dto.LoginDTO;
 import com.example.conferenceManagement.dto.UserDTO;
 import com.example.conferenceManagement.entities.User;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
@@ -56,6 +57,14 @@ public class UserServiceImpl implements UserService {
         return mapToUserDTO(savedUser);
     }
 
+    @Override
+    public UserDTO signin(LoginDTO loginDTO) {
+        User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new ResourceNotFoundException("Invalid credentials"));
+        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) {
+            throw new ResourceNotFoundException("Invalid credentials");
+        }
+        return mapToUserDTO(user);
+    }
 
 
     // Convert User entity to UserDTO for returning to the client
