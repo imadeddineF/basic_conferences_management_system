@@ -37,7 +37,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserRole> roles;
 
-    @OneToMany(mappedBy = "author")
+    @ManyToMany(mappedBy = "authors")
     private List<Submission> submissions;
 
     @OneToMany(mappedBy = "reviewer")
