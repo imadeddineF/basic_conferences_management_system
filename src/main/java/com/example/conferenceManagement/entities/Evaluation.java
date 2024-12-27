@@ -1,6 +1,7 @@
 package com.example.conferenceManagement.entities;
 
 
+import com.example.conferenceManagement.enums.EEvaluationStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -25,8 +27,20 @@ public class Evaluation {
     @Column(nullable = false)
     private int score; // 1 to 10
 
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String comment;
+
+    @ElementCollection
+    @CollectionTable(
+            name = "evaluation_comments",
+            joinColumns = @JoinColumn(name = "evaluation_id")
+    )
+    @Column(name = "comment", columnDefinition = "TEXT")
+    private List<String> comments;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String comments;
+    private EEvaluationStatus status;
 
     @ManyToOne
     @JoinColumn(nullable = false)

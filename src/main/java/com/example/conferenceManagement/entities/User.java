@@ -37,6 +37,12 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<UserRole> roles;
 
+    @OneToMany(mappedBy = "author")
+    private List<Submission> submissions;
+
+    @OneToMany(mappedBy = "reviewer")
+    private List<Evaluation> evaluations;
+
     @CreationTimestamp
     private LocalDateTime createAt;
 

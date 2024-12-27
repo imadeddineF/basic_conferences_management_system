@@ -1,11 +1,15 @@
 package com.example.conferenceManagement.entities;
 
+import com.example.conferenceManagement.enums.ESubmissionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -29,14 +33,28 @@ public class Submission {
     @Column(nullable = false)
     private String pdfUrl;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ESubmissionStatus status;
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private Conference conference;
 
-    @ManyToOne
-    @JoinColumn(nullable = false)
-    private User author;
+    @ManyToMany
+    @JoinTable(
+            name = "submission_authors",
+            joinColumns = @JoinColumn(name = "submission_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> authors;
 
     @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL)
     private List<Evaluation> evaluations;
+
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
