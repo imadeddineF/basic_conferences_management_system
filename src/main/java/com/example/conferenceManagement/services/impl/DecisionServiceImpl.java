@@ -1,7 +1,7 @@
 package com.example.conferenceManagement.services.impl;
 
 import com.example.conferenceManagement.entities.Conference;
-import com.example.conferenceManagement.enums.ESubmissionStatus;
+import com.example.conferenceManagement.enums.EConferenceStatus;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
 import com.example.conferenceManagement.repositories.ConferenceRepository;
 import com.example.conferenceManagement.services.interfaces.DecisionService;
@@ -16,7 +16,7 @@ public class DecisionServiceImpl implements DecisionService {
     }
 
     @Override
-    public ESubmissionStatus findConferenceDecisionById(Long conferenceId) {
+    public EConferenceStatus findConferenceDecisionById(Long conferenceId) {
         Conference conference = conferenceRepository.findById(conferenceId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conference not found with id: " + conferenceId));
         return conference.getStatus();

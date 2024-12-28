@@ -1,5 +1,6 @@
 package com.example.conferenceManagement.entities;
 
+import com.example.conferenceManagement.enums.EConferenceStatus;
 import com.example.conferenceManagement.enums.ESubmissionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -40,7 +41,7 @@ public class Conference {
     private String theme;
 
     @Enumerated(EnumType.STRING)
-    private ESubmissionStatus status; // OPEN, CLOSED, REVIEWING
+    private EConferenceStatus status; // OPEN, CLOSED
 
     @OneToMany(mappedBy = "conference", cascade = CascadeType.ALL)
     private List<Submission> submissions;

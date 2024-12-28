@@ -1,7 +1,6 @@
 package com.example.conferenceManagement.controllers;
 
-import com.example.conferenceManagement.entities.Conference;
-import com.example.conferenceManagement.enums.ESubmissionStatus;
+import com.example.conferenceManagement.enums.EConferenceStatus;
 import com.example.conferenceManagement.services.interfaces.DecisionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +19,7 @@ public class DecisionController {
     }
 
     @GetMapping("/conferences/decision/{conferenceId}")
-    public ESubmissionStatus getConferenceDecisionById(@PathVariable Long conferenceId) {
+    public EConferenceStatus getConferenceDecisionById(@PathVariable Long conferenceId) {
         return decisionService.findConferenceDecisionById(conferenceId);
     }
 }

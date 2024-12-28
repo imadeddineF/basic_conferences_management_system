@@ -1,7 +1,7 @@
 package com.example.conferenceManagement.entities;
 
 
-import com.example.conferenceManagement.enums.EEvaluationStatus;
+import com.example.conferenceManagement.enums.ESubmissionStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,7 +40,7 @@ public class Evaluation {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EEvaluationStatus status;
+    private ESubmissionStatus status;
 
     @ManyToOne
     @JoinColumn(nullable = false)

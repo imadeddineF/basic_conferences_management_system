@@ -1,8 +1,7 @@
 package com.example.conferenceManagement.services.interfaces;
 
-import com.example.conferenceManagement.entities.Conference;
-import com.example.conferenceManagement.enums.ESubmissionStatus;
+import com.example.conferenceManagement.enums.EConferenceStatus;
 
 public interface DecisionService {
-    ESubmissionStatus findConferenceDecisionById(Long conferenceId);
+    EConferenceStatus findConferenceDecisionById(Long conferenceId);
 }
