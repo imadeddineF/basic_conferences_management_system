@@ -68,6 +68,11 @@
 			<artifactId>lombok</artifactId>
 			<optional>true</optional> <!-- Mark as optional since it's not part of the runtime dependencies -->
 		</dependency>
+		<!-- Validation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+		</dependency>
 		<!-- for testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

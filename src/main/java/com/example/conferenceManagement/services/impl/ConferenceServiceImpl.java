@@ -1,7 +1,6 @@
 package com.example.conferenceManagement.services.impl;
 
 import com.example.conferenceManagement.entities.Conference;
-import com.example.conferenceManagement.entities.User;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
 import com.example.conferenceManagement.repositories.ConferenceRepository;
 import com.example.conferenceManagement.services.interfaces.ConferenceService;
