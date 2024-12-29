@@ -1,7 +1,8 @@
 package com.example.conferenceManagement.enums;
 
 public enum EConferenceStatus {
-    OPEN,
-    CLOSED,
-    UNDER_REVIEW,
+    OPEN,      // open for submissions
+    CLOSED,    // closed for submissions
+    EVALUATION,// in evaluation phase
+    COMPLETED  // conference ended
 }

@@ -1,14 +1,13 @@
 package com.example.conferenceManagement.controllers;
 
+import com.example.conferenceManagement.entities.Submission;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
 import com.example.conferenceManagement.services.interfaces.SubmissionService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api")
@@ -18,6 +17,23 @@ public class SubmissionController {
   @Autowired
   public SubmissionController(SubmissionService submissionService) {
       this.submissionService = submissionService;
+  }
+
+
+  @PostMapping("/submissions")
+  public ResponseEntity<Submission> createSubmission(@RequestBody @Valid Submission newSubmission) {
+      Submission savedSubmission = submissionService.createSubmission(newSubmission);
+      return ResponseEntity.ok(savedSubmission);
+  }
+
+  @GetMapping("/submissions/{submissionId}")
+  public ResponseEntity<Submission> getSubmissionById(@PathVariable Long submissionId) {
+      try {
+          Submission submission = submissionService.findSubmissionById(submissionId);
+          return ResponseEntity.ok(submission);
+      } catch (ResourceNotFoundException e) {
+          return ResponseEntity.notFound().build();
+      }
   }
 
   @PostMapping("/submissions/{submissionId}/assign")

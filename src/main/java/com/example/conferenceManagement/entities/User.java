@@ -1,6 +1,9 @@
 package com.example.conferenceManagement.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,16 +25,19 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "First name cannot be blank")
     private String firstName;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Last name cannot be blank")
     private String lastName;
 
-    @Column(nullable = false, unique = true)
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Invalid email format")
+    @Column(unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Password cannot be blank")
+    @Size(min = 8, message = "Password must be at least 8 characters long")
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)

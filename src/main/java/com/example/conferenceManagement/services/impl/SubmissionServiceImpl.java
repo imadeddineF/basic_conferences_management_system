@@ -30,6 +30,17 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
+    public Submission findSubmissionById(Long submissionId) {
+        return submissionRepository.findById(submissionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
+    }
+
+    @Override
+    public Submission createSubmission(Submission submission) {
+        return submissionRepository.save(submission);
+    }
+
+    @Override
     public void assignSubmissionToEvaluator(Long submissionId, Long evaluatorId, Long editorId) {
         // Fetch submission, evaluator, and editor
         Submission submission = submissionRepository.findById(submissionId)

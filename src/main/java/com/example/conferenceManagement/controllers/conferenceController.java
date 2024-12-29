@@ -4,6 +4,7 @@ import com.example.conferenceManagement.dto.UserDTO;
 import com.example.conferenceManagement.entities.Conference;
 import com.example.conferenceManagement.entities.User;
 import com.example.conferenceManagement.services.interfaces.ConferenceService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,7 +31,7 @@ public class conferenceController {
     }
 
     @PostMapping("/addConference")
-    public Conference createConference(@RequestBody Conference newConference) {
+    public Conference createConference(@RequestBody @Valid Conference newConference) {
         return conferenceService.createConference(newConference);
     }
 }

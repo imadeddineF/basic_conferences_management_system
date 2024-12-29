@@ -1,7 +1,6 @@
 package com.example.conferenceManagement.controllers;
 
 import com.example.conferenceManagement.dto.UserDTO;
-import com.example.conferenceManagement.entities.User;
 import com.example.conferenceManagement.services.interfaces.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

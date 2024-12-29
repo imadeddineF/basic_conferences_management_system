@@ -2,6 +2,8 @@ package com.example.conferenceManagement.entities;
 
 import com.example.conferenceManagement.enums.ESubmissionStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,19 +26,20 @@ public class Submission {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Title cannot be blank")
     private String title;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Summary cannot be blank")
     private String summary;
 
-    @Column(nullable = false)
+    @NotBlank(message = "PDF URL cannot be blank")
     private String pdfUrl;
 
+    @NotNull(message = "Status cannot be null")
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private ESubmissionStatus status;
 
+    @NotNull(message = "Conference cannot be null")
     @ManyToOne
     @JoinColumn(nullable = false)
     private Conference conference;

@@ -3,6 +3,9 @@ package com.example.conferenceManagement.entities;
 import com.example.conferenceManagement.enums.EConferenceStatus;
 import com.example.conferenceManagement.enums.ESubmissionStatus;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,21 +28,23 @@ public class Conference {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Title cannot be blank")
+    @Size(max = 100, message = "Title cannot exceed 100 characters")
     private String title;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Description cannot be blank")
     private String description;
 
-    @Column(nullable = false)
+    @NotNull(message = "Start date cannot be null")
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @NotNull(message = "End date cannot be null")
     private LocalDate endDate;
 
-    @Column(nullable = false)
+    @NotBlank(message = "Theme cannot be blank")
     private String theme;
 
+    @NotNull(message = "Status cannot be null")
     @Enumerated(EnumType.STRING)
     private EConferenceStatus status; // OPEN, CLOSED
 
