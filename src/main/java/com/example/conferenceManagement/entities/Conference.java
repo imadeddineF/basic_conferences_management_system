@@ -32,7 +32,7 @@ public class Conference {
     @Size(max = 100, message = "Title cannot exceed 100 characters")
     private String title;
 
-    @NotBlank(message = "Description cannot be blank")
+    // @NotBlank(message = "Description cannot be blank")
     private String description;
 
     @NotNull(message = "Start date cannot be null")

@@ -20,7 +20,7 @@ public class SubmissionController {
   }
 
 
-  @PostMapping("/submissions")
+  @PostMapping("/addSubmission")
   public ResponseEntity<Submission> createSubmission(@RequestBody @Valid Submission newSubmission) {
       Submission savedSubmission = submissionService.createSubmission(newSubmission);
       return ResponseEntity.ok(savedSubmission);

@@ -29,7 +29,7 @@ public class EvaluationController {
       }
   }
 
-  @PostMapping("/evaluations")
+  @PostMapping("/addEvaluation")
   public ResponseEntity<Evaluation> createEvaluation(@RequestBody @Valid Evaluation newEvaluation) {
       Evaluation savedEvaluation = evaluationService.createEvaluation(newEvaluation);
       return ResponseEntity.ok(savedEvaluation);
