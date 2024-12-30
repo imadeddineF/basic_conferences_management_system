@@ -53,7 +53,7 @@ public class SubmissionServiceImpl implements SubmissionService {
                 .orElseThrow(() -> new ResourceNotFoundException("Editor not found with id: " + editorId));
 
         // Verify that the editor is authorized (has the "EDITOR" role in the conference)
-        boolean isEditor = userRoleRepository.existsByUserIdAndConferenceIdAndRole(editorId, submission.getConference().getId(), EUserRole.EDITOR);
+        boolean isEditor = userRoleRepository.existsByIdUserIdAndIdConferenceIdAndIdRole(editorId, submission.getConference().getId(), EUserRole.EDITOR);
         if (!isEditor) {
             throw new IllegalArgumentException("User is not authorized as an editor for this conference.");
         }
@@ -76,5 +76,6 @@ public class SubmissionServiceImpl implements SubmissionService {
         // Save the updated submission
         submissionRepository.save(submission);
     }
+
 
 }

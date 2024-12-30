@@ -1,6 +1,7 @@
 package com.example.conferenceManagement.exceptions;
 
 import com.example.conferenceManagement.dto.ErrorResponseDTO;
+import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
 @ControllerAdvice
 public class GlobalExceptionHandler {
     // Handle generic exceptions
