@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/api")
 public class SubmissionController {
@@ -19,6 +21,10 @@ public class SubmissionController {
       this.submissionService = submissionService;
   }
 
+  @GetMapping("/submissions")
+  public List<Submission> getAllSubmissions() {
+      return this.submissionService.findAllSubmissions();
+  }
 
   @PostMapping("/addSubmission")
   public ResponseEntity<Submission> createSubmission(@RequestBody @Valid Submission newSubmission) {

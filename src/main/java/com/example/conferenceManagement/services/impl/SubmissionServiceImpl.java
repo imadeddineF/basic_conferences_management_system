@@ -1,5 +1,6 @@
 package com.example.conferenceManagement.services.impl;
 
+import com.example.conferenceManagement.entities.Conference;
 import com.example.conferenceManagement.entities.Evaluation;
 import com.example.conferenceManagement.entities.Submission;
 import com.example.conferenceManagement.entities.User;
@@ -14,6 +15,8 @@ import com.example.conferenceManagement.services.interfaces.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class SubmissionServiceImpl implements SubmissionService {
     private SubmissionRepository submissionRepository;
@@ -27,6 +30,12 @@ public class SubmissionServiceImpl implements SubmissionService {
         this.evaluationRepository = evaluationRepository;
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
+    }
+
+    @Override
+    public List<Submission> findAllSubmissions() {
+        List<Submission> submissions = submissionRepository.findAll();
+        return submissions;
     }
 
     @Override
