@@ -28,7 +28,7 @@ public class Evaluation {
     private Long id;
 
     @NotNull(message = "Score cannot be null")
-    @Size(min = 1, max = 10, message = "Score must be between 1 and 10")
+    /*@Size(min = 1, max = 10, message = "Score must be between 1 and 10") */
     private int score; // 1 to 10
 
     @NotBlank(message = "Comment cannot be blank")
