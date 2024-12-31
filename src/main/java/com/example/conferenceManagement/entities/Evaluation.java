@@ -3,9 +3,7 @@ package com.example.conferenceManagement.entities;
 
 import com.example.conferenceManagement.enums.ESubmissionStatus;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,7 +26,9 @@ public class Evaluation {
     private Long id;
 
     @NotNull(message = "Score cannot be null")
-    @Size(min = 1, max = 10, message = "Score must be between 1 and 10")
+//    @Size(min = 1, max = 10, message = "Score must be between 1 and 10")
+    @Min(value = 1, message = "Score must be at least 1")
+    @Max(value = 10, message = "Score must be at most 10")
     private int score; // 1 to 10
 
     @NotBlank(message = "Comment cannot be blank")

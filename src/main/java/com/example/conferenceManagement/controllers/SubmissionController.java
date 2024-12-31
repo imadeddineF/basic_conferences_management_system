@@ -23,7 +23,7 @@ public class SubmissionController {
 
   @GetMapping("/submissions")
   public List<Submission> getAllSubmissions() {
-      return null;
+      return this.submissionService.findAllSubmissions();
   }
 
   @PostMapping("/addSubmission")

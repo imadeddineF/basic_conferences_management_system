@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SubmissionServiceImpl implements SubmissionService {
@@ -46,8 +47,20 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public Submission createSubmission(Submission submission) {
+        // Validate that all authors exist
+        List<Long> authorIds = submission.getAuthors().stream()
+                .map(User::getId)
+                .collect(Collectors.toList());
+        List<User> existingUsers = userRepository.findAllById(authorIds);
+
+        if (existingUsers.size() != authorIds.size()) {
+            throw new IllegalArgumentException("One or more authors do not exist in the database.");
+        }
+
+        // Save the submission
         return submissionRepository.save(submission);
     }
+
 
     @Override
     public void assignSubmissionToEvaluator(Long submissionId, Long evaluatorId, Long editorId) {
