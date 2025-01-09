@@ -8,6 +8,9 @@ class ConferenceManagementApplicationTests {
 
 	@Test
 	void contextLoads() {
+
+
+
 	}
 
 }

@@ -13,4 +13,13 @@ public class LoginDTO {
     private String email;
     @NotBlank(message = "Password cannot be blank")
     private String password;
+    // Add this constructor
+    public LoginDTO(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
+    // Default constructor (required for frameworks like Jackson)
+    public LoginDTO() {
+    }
 }

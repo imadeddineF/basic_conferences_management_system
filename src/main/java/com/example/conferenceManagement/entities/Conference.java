@@ -59,4 +59,6 @@ public class Conference {
 
     @UpdateTimestamp
     private LocalDateTime updateAt;
+
+
 }
