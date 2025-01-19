@@ -17,3 +17,4 @@ public interface ConferenceRepository extends JpaRepository<Conference, Long> {
     Optional<Conference> findByTheme(String theme);
     Optional<Conference> findByStatus(EConferenceStatus status);
 }
+

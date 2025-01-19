@@ -3,109 +3,71 @@ package com.example.conferenceManagement.unittestRepository;
 import com.example.conferenceManagement.entities.Conference;
 import com.example.conferenceManagement.enums.EConferenceStatus;
 import com.example.conferenceManagement.repositories.ConferenceRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.junit.jupiter.api.BeforeEach;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-class ConferenceRepositoryTest {
-
-    @BeforeEach
-    void setUp() {
-        conferenceRepository.deleteAll(); // Optional: clean up before each test
-    }
+public class ConferenceRepositoryTest {
 
     @Autowired
     private ConferenceRepository conferenceRepository;
 
+    private Conference testConference;
+
+    @BeforeEach
+    void setUp() {
+        // Initialize a test conference
+        testConference = new Conference();
+        testConference.setTitle("Spring Boot Conference");
+        testConference.setStartDate(LocalDate.of(2025, 1, 20));
+        testConference.setEndDate(LocalDate.of(2025, 1, 22));
+        testConference.setTheme("Technology and Innovation");
+        testConference.setStatus(EConferenceStatus.EVALUATION);
+
+        // Save the test conference to the repository
+        conferenceRepository.save(testConference);
+    }
+
     @Test
     void testFindByTitle() {
-        // Arrange
-        Conference conference = Conference.builder()
-                .title("AI Revolution 2025")
-                .startDate(LocalDate.of(2025, 3, 1))
-                .endDate(LocalDate.of(2025, 3, 3))
-                .theme("Artificial Intelligence")
-                .status(EConferenceStatus.OPEN)
-                .build();
-
-        conferenceRepository.save(conference);
-
-        // Act
-        Optional<Conference> foundConference = conferenceRepository.findByTitle("AI Revolution 2025");
-
-        // Assert
-        assertTrue(foundConference.isPresent());
-        assertEquals("AI Revolution 2025", foundConference.get().getTitle());
+        Optional<Conference> conference = conferenceRepository.findByTitle("Spring Boot Conference");
+        assertThat(conference).isPresent();
+        assertThat(conference.get().getTitle()).isEqualTo(testConference.getTitle());
     }
 
     @Test
     void testFindByStartDate() {
-        // Arrange
-        Conference conference = Conference.builder()
-                .title("Tech Summit")
-                .startDate(LocalDate.of(2025, 5, 10))
-                .endDate(LocalDate.of(2025, 5, 12))
-                .theme("Innovation")
-                .status(EConferenceStatus.CLOSED)
-                .build();
+        Optional<Conference> conference = conferenceRepository.findByStartDate(LocalDate.of(2025, 1, 20));
+        assertThat(conference).isPresent();
+        assertThat(conference.get().getStartDate()).isEqualTo(testConference.getStartDate());
+    }
 
-        conferenceRepository.save(conference);
-
-        // Act
-        Optional<Conference> foundConference = conferenceRepository.findByStartDate(LocalDate.of(2025, 5, 10));
-
-        // Assert
-        assertTrue(foundConference.isPresent());
-        assertEquals(LocalDate.of(2025, 5, 10), foundConference.get().getStartDate());
+    @Test
+    void testFindByEndDate() {
+        Optional<Conference> conference = conferenceRepository.findByEndDate(LocalDate.of(2025, 1, 22));
+        assertThat(conference).isPresent();
+        assertThat(conference.get().getEndDate()).isEqualTo(testConference.getEndDate());
     }
 
     @Test
     void testFindByTheme() {
-        // Arrange
-        Conference conference = Conference.builder()
-                .title("Sustainability Summit")
-                .startDate(LocalDate.of(2025, 7, 20))
-                .endDate(LocalDate.of(2025, 7, 22))
-                .theme("Green Tech")
-                .status(EConferenceStatus.OPEN)
-                .build();
-
-        conferenceRepository.save(conference);
-
-        // Act
-        Optional<Conference> foundConference = conferenceRepository.findByTheme("Green Tech");
-
-        // Assert
-        assertTrue(foundConference.isPresent());
-        assertEquals("Green Tech", foundConference.get().getTheme());
+        Optional<Conference> conference = conferenceRepository.findByTheme("Technology and Innovation");
+        assertThat(conference).isPresent();
+        assertThat(conference.get().getTheme()).isEqualTo(testConference.getTheme());
     }
-/*
+
     @Test
     void testFindByStatus() {
-        // Arrange
-        Conference conference = Conference.builder()
-                .title("Robotics Expo")
-                .startDate(LocalDate.of(2025, 8, 15))
-                .endDate(LocalDate.of(2025, 8, 17))
-                .theme("Automation")
-                .status(EConferenceStatus.OPEN)
-                .build();
-
-        conferenceRepository.save(conference);
-
-        // Act
-        Optional<Conference> foundConference = conferenceRepository.findByStatus(EConferenceStatus.OPEN);
-
-        // Assert
-        assertTrue(foundConference.isPresent());
-        assertEquals(EConferenceStatus.CLOSED, foundConference.get().getStatus());
+        Optional<Conference> conference = conferenceRepository.findByStatus(EConferenceStatus.EVALUATION);
+        assertThat(conference).isPresent();
+        assertThat(conference.get().getStatus()).isEqualTo(testConference.getStatus());
     }
-    
- */
 }
