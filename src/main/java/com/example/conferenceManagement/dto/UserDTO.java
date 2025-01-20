@@ -3,6 +3,7 @@ package com.example.conferenceManagement.dto;
 import com.example.conferenceManagement.entities.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,6 +12,8 @@ import java.util.List;
 
 @Data
 @Builder
+@AllArgsConstructor
+
 public class UserDTO {
     private Long id;
 

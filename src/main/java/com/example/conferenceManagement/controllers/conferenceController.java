@@ -10,7 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-public class conferenceController {
+public class  conferenceController {
     private ConferenceService conferenceService;
 
     @Autowired
