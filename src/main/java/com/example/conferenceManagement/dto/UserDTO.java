@@ -24,7 +24,8 @@ public class UserDTO {
     @Email(message = "Invalid email format")
     private String email;
 
-    private List<UserRole> roles;
+    // private List<UserRole> roles;
+    private List<UserRoleInfoDTO> roles;
     private LocalDateTime createAt;
     private LocalDateTime updateAt;
 }

@@ -2,6 +2,7 @@ package com.example.conferenceManagement.services.impl;
 
 import com.example.conferenceManagement.dto.LoginDTO;
 import com.example.conferenceManagement.dto.UserDTO;
+import com.example.conferenceManagement.dto.UserRoleInfoDTO;
 import com.example.conferenceManagement.entities.User;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
 import com.example.conferenceManagement.repositories.UserRepository;
@@ -10,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +35,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<User> findUserEntityById(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    @Override
     public UserDTO findUserById(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
@@ -40,20 +48,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO createUser(User newUser) {
-        // Encrypt the password
         String encodedPassword = passwordEncoder.encode(newUser.getPassword());
-
-        // Create User entity from UserDTO
-        User user = new User();
-        user.setFirstName(newUser.getFirstName());
-        user.setLastName(newUser.getLastName());
-        user.setEmail(newUser.getEmail());
-        user.setPassword(encodedPassword);
-
-        // Save user to the database
+        User user = User.builder()
+                .firstName(newUser.getFirstName())
+                .lastName(newUser.getLastName())
+                .email(newUser.getEmail())
+                .password(encodedPassword)
+                .roles(new ArrayList<>()) // Explicitly initialize roles
+                .build();
         User savedUser = userRepository.save(user);
-
-        // Return the UserDTO without password
         return mapToUserDTO(savedUser);
     }
 
@@ -69,15 +72,23 @@ public class UserServiceImpl implements UserService {
 
     // Convert User entity to UserDTO for returning to the client
     private UserDTO mapToUserDTO(User user) {
-        UserDTO userDTO = UserDTO.builder()
+        List<UserRoleInfoDTO> roles = (user.getRoles() != null) ?
+                user.getRoles().stream()
+                        .map(role -> UserRoleInfoDTO.builder()
+                                .conferenceId(role.getConference().getId())
+                                .role(role.getId().getRole())
+                                .build())
+                        .collect(Collectors.toList())
+                : new ArrayList<>(); // Fallback to empty list
+
+        return UserDTO.builder()
                 .id(user.getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
-                .roles(user.getRoles())
+                .roles(roles)
                 .createAt(user.getCreateAt())
                 .updateAt(user.getUpdateAt())
                 .build();
-        return userDTO;
     }
 }

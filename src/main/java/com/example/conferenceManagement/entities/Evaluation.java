@@ -1,6 +1,5 @@
 package com.example.conferenceManagement.entities;
 
-
 import com.example.conferenceManagement.enums.ESubmissionStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -25,23 +24,14 @@ public class Evaluation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Score cannot be null")
-//    @Size(min = 1, max = 10, message = "Score must be between 1 and 10")
+    // Remove @NotNull to allow null for pending evaluations
     @Min(value = 1, message = "Score must be at least 1")
     @Max(value = 10, message = "Score must be at most 10")
-    private int score; // 1 to 10
+    private Integer score; // Keep as Integer (nullable)
 
-    @NotBlank(message = "Comment cannot be blank")
+    // Single comment field (not a list)
     @Size(max = 500, message = "Comment cannot exceed 500 characters")
-    private String comment;
-
-    @ElementCollection
-    @CollectionTable(
-            name = "evaluation_comments",
-            joinColumns = @JoinColumn(name = "evaluation_id")
-    )
-    @Column(name = "comment", columnDefinition = "TEXT")
-    private List<String> comments;
+    private String comment; // No @NotBlank
 
     @NotNull(message = "Status cannot be null")
     @Enumerated(EnumType.STRING)
@@ -62,4 +52,9 @@ public class Evaluation {
 
     @UpdateTimestamp
     private LocalDateTime updateAt;
+
+    // Remove this conflicting field (duplicate of 'comment')
+    // @ElementCollection
+    // @CollectionTable(...)
+    // private List<String> comments;
 }

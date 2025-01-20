@@ -1,6 +1,7 @@
 package com.example.conferenceManagement.entities;
 
 import com.example.conferenceManagement.enums.EUserRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,12 +22,13 @@ public class UserRole {
     @EmbeddedId
     private UserRoleId id;  // Composite primary key containing userId, conferenceId, and role
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("userId")  // Maps the userId field from the embedded ID
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("conferenceId")  // Maps the conferenceId field from the embedded ID
     @JoinColumn(name = "conference_id")
     private Conference conference;

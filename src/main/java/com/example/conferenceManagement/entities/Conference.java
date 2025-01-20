@@ -2,6 +2,7 @@ package com.example.conferenceManagement.entities;
 
 import com.example.conferenceManagement.enums.EConferenceStatus;
 import com.example.conferenceManagement.enums.ESubmissionStatus;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -15,6 +16,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -49,9 +51,10 @@ public class Conference {
     private EConferenceStatus status; // OPEN, CLOSED
 
     @OneToMany(mappedBy = "conference", cascade = CascadeType.ALL)
-    private List<Submission> submissions;
+    private List<Submission> submissions = new ArrayList<>(); // to avoid NullPointerException
 
-    @OneToMany(mappedBy = "conference", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "conference", fetch = FetchType.EAGER) // Change from LAZY
+    @JsonIgnore
     private List<UserRole> userRoles;
 
     @CreationTimestamp
@@ -59,6 +62,4 @@ public class Conference {
 
     @UpdateTimestamp
     private LocalDateTime updateAt;
-
-
 }

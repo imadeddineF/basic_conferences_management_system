@@ -1,5 +1,7 @@
 package com.example.conferenceManagement.services.impl;
 
+import com.example.conferenceManagement.dto.SubmissionRequestDTO;
+import com.example.conferenceManagement.dto.SubmissionResponseDTO;
 import com.example.conferenceManagement.entities.Conference;
 import com.example.conferenceManagement.entities.Evaluation;
 import com.example.conferenceManagement.entities.Submission;
@@ -7,10 +9,7 @@ import com.example.conferenceManagement.entities.User;
 import com.example.conferenceManagement.enums.ESubmissionStatus;
 import com.example.conferenceManagement.enums.EUserRole;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
-import com.example.conferenceManagement.repositories.EvaluationRepository;
-import com.example.conferenceManagement.repositories.SubmissionRepository;
-import com.example.conferenceManagement.repositories.UserRepository;
-import com.example.conferenceManagement.repositories.UserRoleRepository;
+import com.example.conferenceManagement.repositories.*;
 import com.example.conferenceManagement.services.interfaces.SubmissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,51 +19,72 @@ import java.util.stream.Collectors;
 
 @Service
 public class SubmissionServiceImpl implements SubmissionService {
-    private SubmissionRepository submissionRepository;
-    private EvaluationRepository evaluationRepository;
-    private UserRepository userRepository;
-    private UserRoleRepository userRoleRepository;
+    private final SubmissionRepository submissionRepository;
+    private final EvaluationRepository evaluationRepository;
+    private final UserRepository userRepository;
+    private final UserRoleRepository userRoleRepository;
+    private final ConferenceRepository conferenceRepository;
 
     @Autowired
-    public SubmissionServiceImpl(SubmissionRepository submissionRepository, EvaluationRepository evaluationRepository, UserRepository userRepository, UserRoleRepository userRoleRepository) {
+    public SubmissionServiceImpl(
+            SubmissionRepository submissionRepository,
+            EvaluationRepository evaluationRepository,
+            UserRepository userRepository,
+            UserRoleRepository userRoleRepository,
+            ConferenceRepository conferenceRepository
+    ) {
         this.submissionRepository = submissionRepository;
         this.evaluationRepository = evaluationRepository;
         this.userRepository = userRepository;
         this.userRoleRepository = userRoleRepository;
+        this.conferenceRepository = conferenceRepository;
     }
 
     @Override
-    public List<Submission> findAllSubmissions() {
-        List<Submission> submissions = submissionRepository.findAll();
-        return submissions;
-    }
-
-    @Override
-    public Submission findSubmissionById(Long submissionId) {
-        return submissionRepository.findById(submissionId)
-                .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
-    }
-
-    @Override
-    public Submission createSubmission(Submission submission) {
-        // Validate that all authors exist
-        List<Long> authorIds = submission.getAuthors().stream()
-                .map(User::getId)
+    public List<SubmissionResponseDTO> findAllSubmissions() {
+        return submissionRepository.findAll()
+                .stream()
+                .map(this::mapToSubmissionResponseDTO)
                 .collect(Collectors.toList());
-        List<User> existingUsers = userRepository.findAllById(authorIds);
+    }
 
-        if (existingUsers.size() != authorIds.size()) {
-            throw new IllegalArgumentException("One or more authors do not exist in the database.");
+    @Override
+    public SubmissionResponseDTO findSubmissionById(Long submissionId) {
+        Submission submission = submissionRepository.findById(submissionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
+        return mapToSubmissionResponseDTO(submission);
+    }
+
+
+
+    @Override
+    public SubmissionResponseDTO createSubmission(SubmissionRequestDTO submissionRequest) {
+        // Fetch conference
+        Conference conference = conferenceRepository.findById(submissionRequest.getConferenceId())
+                .orElseThrow(() -> new ResourceNotFoundException("Conference not found with id: " + submissionRequest.getConferenceId()));
+
+        // Validate authors
+        List<User> authors = userRepository.findAllById(submissionRequest.getAuthorIds());
+        if (authors.size() != submissionRequest.getAuthorIds().size()) {
+            throw new IllegalArgumentException("One or more authors do not exist.");
         }
 
-        // Save the submission
-        return submissionRepository.save(submission);
-    }
+        // Build submission entity
+        Submission submission = Submission.builder()
+                .title(submissionRequest.getTitle())
+                .summary(submissionRequest.getSummary())
+                .pdfUrl(submissionRequest.getPdfUrl())
+                .status(ESubmissionStatus.valueOf(submissionRequest.getStatus().name()))
+                .conference(conference)
+                .authors(authors)
+                .build();
 
+        Submission savedSubmission = submissionRepository.save(submission);
+        return mapToSubmissionResponseDTO(savedSubmission);
+    }
 
     @Override
     public void assignSubmissionToEvaluator(Long submissionId, Long evaluatorId, Long editorId) {
-        // Fetch submission, evaluator, and editor
         Submission submission = submissionRepository.findById(submissionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Submission not found with id: " + submissionId));
 
@@ -74,30 +94,47 @@ public class SubmissionServiceImpl implements SubmissionService {
         User editor = userRepository.findById(editorId)
                 .orElseThrow(() -> new ResourceNotFoundException("Editor not found with id: " + editorId));
 
-        // Verify that the editor is authorized (has the "EDITOR" role in the conference)
-        boolean isEditor = userRoleRepository.existsByIdUserIdAndIdConferenceIdAndIdRole(editorId, submission.getConference().getId(), EUserRole.EDITOR);
+        // Verify editor authorization
+        boolean isEditor = userRoleRepository.existsByIdUserIdAndIdConferenceIdAndIdRole(
+                editorId,
+                submission.getConference().getId(),
+                EUserRole.EDITOR
+        );
         if (!isEditor) {
             throw new IllegalArgumentException("User is not authorized as an editor for this conference.");
         }
 
-        // Verify that the evaluator is not an author of the submission
+        // Check if evaluator is an author
         if (submission.getAuthors().contains(evaluator)) {
             throw new IllegalArgumentException("Evaluator cannot evaluate a submission they authored.");
         }
 
-        // Assign the submission to the evaluator
+        // Create evaluation with default values
         Evaluation evaluation = Evaluation.builder()
                 .submission(submission)
                 .reviewer(evaluator)
                 .status(ESubmissionStatus.PENDING)
+                .score(null)  // Explicitly set to null
+                .comment("Pending evaluation")  // Default placeholder
                 .build();
 
-        // Add the evaluation to the submission
-        submission.getEvaluations().add(evaluation);
-
-        // Save the updated submission
+        Evaluation savedEvaluation = evaluationRepository.save(evaluation);
+        submission.getEvaluations().add(savedEvaluation);
         submissionRepository.save(submission);
     }
 
-
+    // Convert entity to DTO
+    private SubmissionResponseDTO mapToSubmissionResponseDTO(Submission submission) {
+        return SubmissionResponseDTO.builder()
+                .id(submission.getId())
+                .title(submission.getTitle())
+                .summary(submission.getSummary())
+                .pdfUrl(submission.getPdfUrl())
+                .status(submission.getStatus())
+                .conferenceId(submission.getConference().getId())
+                .authorIds(submission.getAuthors().stream().map(User::getId).collect(Collectors.toList()))
+                .createdAt(submission.getCreatedAt())
+                .updatedAt(submission.getUpdatedAt())
+                .build();
+    }
 }

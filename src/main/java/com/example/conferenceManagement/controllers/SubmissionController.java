@@ -1,58 +1,65 @@
 package com.example.conferenceManagement.controllers;
 
-import com.example.conferenceManagement.entities.Submission;
+import com.example.conferenceManagement.dto.SubmissionRequestDTO;
+import com.example.conferenceManagement.dto.SubmissionResponseDTO;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
 import com.example.conferenceManagement.services.interfaces.SubmissionService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
-@RequestMapping("/api")
+@RestController
+@RequestMapping("/api/submissions")
 public class SubmissionController {
-  SubmissionService submissionService;
+    private final SubmissionService submissionService;
 
-  @Autowired
-  public SubmissionController(SubmissionService submissionService) {
-      this.submissionService = submissionService;
-  }
+    @Autowired
+    public SubmissionController(SubmissionService submissionService) {
+        this.submissionService = submissionService;
+    }
 
-  @GetMapping("/submissions")
-  public List<Submission> getAllSubmissions() {
-      return this.submissionService.findAllSubmissions();
-  }
+    @GetMapping
+    public ResponseEntity<List<SubmissionResponseDTO>> getAllSubmissions() {
+        return ResponseEntity.ok(submissionService.findAllSubmissions());
+    }
 
-  @PostMapping("/addSubmission")
-  public ResponseEntity<Submission> createSubmission(@RequestBody @Valid Submission newSubmission) {
-      Submission savedSubmission = submissionService.createSubmission(newSubmission);
-      return ResponseEntity.ok(savedSubmission);
-  }
+    @PostMapping("/addSubmission")
+    public ResponseEntity<SubmissionResponseDTO> createSubmission(
+            @RequestBody @Valid SubmissionRequestDTO request
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(submissionService.createSubmission(request));
+    }
 
-  @GetMapping("/submissions/{submissionId}")
-  public ResponseEntity<Submission> getSubmissionById(@PathVariable Long submissionId) {
-      try {
-          Submission submission = submissionService.findSubmissionById(submissionId);
-          return ResponseEntity.ok(submission);
-      } catch (ResourceNotFoundException e) {
-          return ResponseEntity.notFound().build();
-      }
-  }
+    @GetMapping("/{submissionId}")
+    public ResponseEntity<SubmissionResponseDTO> getSubmissionById(
+            @PathVariable Long submissionId
+    ) {
+        return ResponseEntity.ok(submissionService.findSubmissionById(submissionId));
+    }
 
-  @PostMapping("/submissions/{submissionId}/assign")
-  public ResponseEntity<String> assignSubmissionToEvaluator(
-          @PathVariable Long submissionId,
-          @RequestParam Long evaluatorId,
-          @RequestParam Long editorId
-  ) {
-      try {
-          submissionService.assignSubmissionToEvaluator(submissionId, evaluatorId, editorId);
-          return ResponseEntity.ok("Submission successfully assigned to evaluator.");
-      } catch (IllegalArgumentException | ResourceNotFoundException e) {
-          return ResponseEntity.badRequest().body(e.getMessage());
-      }
-  }
+    @PostMapping("/{submissionId}/assign")
+    public ResponseEntity<String> assignSubmissionToEvaluator(
+            @PathVariable Long submissionId,
+            @RequestParam Long evaluatorId,
+            @RequestParam Long editorId
+    ) {
+        submissionService.assignSubmissionToEvaluator(submissionId, evaluatorId, editorId);
+        return ResponseEntity.ok("Submission successfully assigned to evaluator.");
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFound(ResourceNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgument(IllegalArgumentException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 }

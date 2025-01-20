@@ -1,5 +1,6 @@
 package com.example.conferenceManagement.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -12,6 +13,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -41,12 +43,13 @@ public class User {
     private String password;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<UserRole> roles;
+    private List<UserRole> roles = new ArrayList<>();
 
     @ManyToMany(mappedBy = "authors")
     private List<Submission> submissions;
 
     @OneToMany(mappedBy = "reviewer")
+    @JsonIgnore
     private List<Evaluation> evaluations;
 
     @CreationTimestamp
