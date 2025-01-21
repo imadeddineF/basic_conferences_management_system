@@ -27,6 +27,7 @@ public class Evaluation {
     // Remove @NotNull to allow null for pending evaluations
     @Min(value = 1, message = "Score must be at least 1")
     @Max(value = 10, message = "Score must be at most 10")
+    @Column(nullable = true)
     private Integer score; // Keep as Integer (nullable)
 
     // Single comment field (not a list)
@@ -38,7 +39,7 @@ public class Evaluation {
     private ESubmissionStatus status;
 
     @NotNull(message = "Submission cannot be null")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
     private Submission submission;
 
@@ -52,9 +53,4 @@ public class Evaluation {
 
     @UpdateTimestamp
     private LocalDateTime updateAt;
-
-    // Remove this conflicting field (duplicate of 'comment')
-    // @ElementCollection
-    // @CollectionTable(...)
-    // private List<String> comments;
 }

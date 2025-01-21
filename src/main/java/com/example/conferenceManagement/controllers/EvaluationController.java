@@ -1,19 +1,20 @@
 package com.example.conferenceManagement.controllers;
 
+import com.example.conferenceManagement.dto.EvaluationResponseDTO;
 import com.example.conferenceManagement.entities.Evaluation;
+import com.example.conferenceManagement.dto.SubmitEvaluationDTO;
+import com.example.conferenceManagement.entities.Submission;
 import com.example.conferenceManagement.enums.ESubmissionStatus;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
 import com.example.conferenceManagement.services.interfaces.EvaluationService;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@Validated
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/evaluations")
 public class EvaluationController {
@@ -31,7 +32,7 @@ public class EvaluationController {
         return ResponseEntity.ok(evaluationService.findEvaluationById(evaluationId));
     }
 
-    @PostMapping("/addEvaluation")
+    @PostMapping
     public ResponseEntity<Evaluation> createEvaluation(
             @RequestBody @Valid Evaluation evaluation
     ) {
@@ -43,20 +44,34 @@ public class EvaluationController {
     @PostMapping("/{evaluationId}/submit")
     public ResponseEntity<Evaluation> submitEvaluation(
             @PathVariable Long evaluationId,
-            @RequestParam @Min(1) @Max(10) int score,
-            @RequestParam String comment
+            @RequestBody @Valid SubmitEvaluationDTO request
     ) {
-        Evaluation evaluation = evaluationService.findEvaluationById(evaluationId);
-
-        if (comment == null || comment.isBlank()) {
-            throw new IllegalArgumentException("Comment cannot be blank");
+        // Validate status (only allow ACCEPTED/REJECTED from evaluators)
+        if (request.getStatus() != ESubmissionStatus.ACCEPTED &&
+                request.getStatus() != ESubmissionStatus.REJECTED) {
+            throw new IllegalArgumentException("Status must be ACCEPTED or REJECTED");
         }
 
-        evaluation.setScore(score);
-        evaluation.setComment(comment);
-        evaluation.setStatus(ESubmissionStatus.PENDING);
+        Evaluation evaluation = evaluationService.findEvaluationById(evaluationId);
+
+        evaluation.setScore(request.getScore());
+        evaluation.setComment(request.getComment());
+        evaluation.setStatus(request.getStatus()); // Set evaluator's decision
 
         return ResponseEntity.ok(evaluationService.createEvaluation(evaluation));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<EvaluationResponseDTO>> getAllEvaluations() {
+        return ResponseEntity.ok(evaluationService.findAllEvaluations());
+    }
+
+    // for editors to retrieve accepted evaluations
+    @GetMapping("/accepted")
+    public ResponseEntity<List<Evaluation>> getAcceptedEvaluations() {
+        return ResponseEntity.ok(
+                evaluationService.findEvaluationsByStatus(ESubmissionStatus.ACCEPTED)
+        );
     }
 
     @ExceptionHandler(ResourceNotFoundException.class)

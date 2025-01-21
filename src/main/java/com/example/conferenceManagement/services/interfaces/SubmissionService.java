@@ -4,6 +4,7 @@ import com.example.conferenceManagement.dto.SubmissionRequestDTO;
 import com.example.conferenceManagement.dto.SubmissionResponseDTO;
 import com.example.conferenceManagement.entities.Conference;
 import com.example.conferenceManagement.entities.Submission;
+import com.example.conferenceManagement.enums.ESubmissionStatus;
 
 import java.util.List;
 

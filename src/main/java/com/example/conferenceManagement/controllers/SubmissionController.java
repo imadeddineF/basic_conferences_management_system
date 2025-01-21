@@ -2,6 +2,8 @@ package com.example.conferenceManagement.controllers;
 
 import com.example.conferenceManagement.dto.SubmissionRequestDTO;
 import com.example.conferenceManagement.dto.SubmissionResponseDTO;
+import com.example.conferenceManagement.entities.Submission;
+import com.example.conferenceManagement.enums.ESubmissionStatus;
 import com.example.conferenceManagement.exceptions.ResourceNotFoundException;
 import com.example.conferenceManagement.services.interfaces.SubmissionService;
 import jakarta.validation.Valid;
