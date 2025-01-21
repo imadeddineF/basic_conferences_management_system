@@ -68,7 +68,7 @@ public class EvaluationController {
 
     // for editors to retrieve accepted evaluations
     @GetMapping("/accepted")
-    public ResponseEntity<List<Evaluation>> getAcceptedEvaluations() {
+    public ResponseEntity<List<EvaluationResponseDTO>> getAcceptedEvaluations() {
         return ResponseEntity.ok(
                 evaluationService.findEvaluationsByStatus(ESubmissionStatus.ACCEPTED)
         );

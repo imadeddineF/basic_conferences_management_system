@@ -11,6 +11,5 @@ public interface EvaluationService {
     Evaluation findEvaluationById(Long evaluationId);
     Evaluation createEvaluation(Evaluation evaluation);
     List<EvaluationResponseDTO> findAllEvaluations();
-    List<Evaluation> findEvaluationsByStatus(ESubmissionStatus status);
-
+    List<EvaluationResponseDTO> findEvaluationsByStatus(ESubmissionStatus status);
 }

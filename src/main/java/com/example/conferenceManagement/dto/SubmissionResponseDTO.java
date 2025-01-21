@@ -15,7 +15,7 @@ public class SubmissionResponseDTO {
     private String summary;
     private String pdfUrl;
     private ESubmissionStatus status;
-    private Long conferenceId;
+    private ConferenceResponseDTO conference;
     private List<Long> authorIds;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

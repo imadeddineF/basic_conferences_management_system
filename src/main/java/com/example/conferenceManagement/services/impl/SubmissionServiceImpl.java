@@ -1,5 +1,6 @@
 package com.example.conferenceManagement.services.impl;
 
+import com.example.conferenceManagement.dto.ConferenceResponseDTO;
 import com.example.conferenceManagement.dto.SubmissionRequestDTO;
 import com.example.conferenceManagement.dto.SubmissionResponseDTO;
 import com.example.conferenceManagement.entities.Conference;
@@ -131,10 +132,22 @@ public class SubmissionServiceImpl implements SubmissionService {
                 .summary(submission.getSummary())
                 .pdfUrl(submission.getPdfUrl())
                 .status(submission.getStatus())
-                .conferenceId(submission.getConference().getId())
-                .authorIds(submission.getAuthors().stream().map(User::getId).collect(Collectors.toList()))
+                .conference(mapToConferenceResponseDTO(submission.getConference()))
+                .authorIds(submission.getAuthors().stream().map(User::getId).toList())
                 .createdAt(submission.getCreatedAt())
                 .updatedAt(submission.getUpdatedAt())
+                .build();
+    }
+
+    private ConferenceResponseDTO mapToConferenceResponseDTO(Conference conference) {
+        return ConferenceResponseDTO.builder()
+                .id(conference.getId())
+                .title(conference.getTitle())
+                .description(conference.getDescription())
+                .startDate(conference.getStartDate())
+                .endDate(conference.getEndDate())
+                .theme(conference.getTheme())
+                .status(conference.getStatus())
                 .build();
     }
 }

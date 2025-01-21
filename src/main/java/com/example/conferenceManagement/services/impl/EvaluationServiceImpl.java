@@ -53,7 +53,10 @@ public class EvaluationServiceImpl implements EvaluationService {
     }
 
     @Override
-    public List<Evaluation> findEvaluationsByStatus(ESubmissionStatus status) {
-        return evaluationRepository.findByStatus(status);
+    public List<EvaluationResponseDTO> findEvaluationsByStatus(ESubmissionStatus status) {
+        return evaluationRepository.findByStatus(status)
+                .stream()
+                .map(this::mapToEvaluationResponseDTO)
+                .collect(Collectors.toList());
     }
 }
