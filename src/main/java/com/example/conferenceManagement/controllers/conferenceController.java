@@ -42,8 +42,11 @@ public class conferenceController {
     @PostMapping("/conferences/addConference")
     public Conference createConference(
             @RequestBody @Valid Conference newConference,
-            @AuthenticationPrincipal User creator // Get authenticated user
+            @RequestParam Long creatorId // Add creator ID as request parameter
     ) {
+        User creator = userService.findUserEntityById(creatorId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + creatorId));
+
         return conferenceService.createConference(newConference, creator);
     }
 
