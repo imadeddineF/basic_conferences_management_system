@@ -39,14 +39,14 @@ public class UserRole {
     @Embeddable
     public static class UserRoleId implements Serializable {
 
-        @Column(name = "user_id")   // Explicitly define the column names for clarity
+        @Column(name = "user_id")
         private Long userId;
 
-        @Column(name = "conference_id")  // Explicitly define the column names for clarity
+        @Column(name = "conference_id")
         private Long conferenceId;
 
         @Enumerated(EnumType.STRING)
-        @Column(name = "role")  // Make sure the role is mapped correctly in the composite key
+        @Column(name = "role")
         private EUserRole role;
 
         @Override

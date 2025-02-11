@@ -53,7 +53,7 @@ public class Conference {
     @OneToMany(mappedBy = "conference", cascade = CascadeType.ALL)
     private List<Submission> submissions = new ArrayList<>(); // to avoid NullPointerException
 
-    @OneToMany(mappedBy = "conference", fetch = FetchType.EAGER) // Change from LAZY
+    @OneToMany(mappedBy = "conference", fetch = FetchType.EAGER) // Changed from LAZY
     @JsonIgnore
     private List<UserRole> userRoles;
 
